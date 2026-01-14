@@ -1,0 +1,12 @@
+module AutoPawnShop
+{
+  item CreditCard
+  {
+    DisplayName = Credit Card,
+    DisplayCategory = Misc,
+    Type = Normal,
+    Weight = 0.1,
+    Icon = CreditCard,
+    WorldStaticModel = CreditCard,
+  }
+}
