@@ -9,10 +9,6 @@ local function isLogExtenderEnabled(option)
     return SandboxVars and SandboxVars.LogExtender and SandboxVars.LogExtender[option]
 end
 
-local function hasMethod(tbl, key)
-    return type(tbl) == "table" and type(tbl[key]) == "function"
-end
-
 -- DumpSafehouse writes player's safehouse info to log file.
 function SafehouseClientLogger.DumpSafehouse(player, action, safehouse, target)
     if player == nil then
@@ -72,7 +68,7 @@ end
 -- OnTakeSafeHouse rewrites original ISWorldObjectContextMenu.onTakeSafeHouse and
 -- adds logs for player take safehouse action.
 SafehouseClientLogger.OnTakeSafeHouse = function()
-    if not hasMethod(ISWorldObjectContextMenu, "onTakeSafeHouse") then
+    if not ISWorldObjectContextMenu or not ISWorldObjectContextMenu.onTakeSafeHouse then
         return
     end
 
@@ -100,7 +96,7 @@ end
 -- OnChangeSafeHouseOwner rewrites original ISSafehouseAddPlayerUI.onClick and
 -- adds logs for change safehouse ownership action.
 SafehouseClientLogger.OnChangeSafeHouseOwner = function()
-    if not hasMethod(ISSafehouseAddPlayerUI, "onClick") then
+    if not ISSafehouseAddPlayerUI or not ISSafehouseAddPlayerUI.onClick then
         return
     end
 
@@ -132,7 +128,7 @@ end
 -- OnReleaseSafeHouse rewrites original ISSafehouseUI.onReleaseSafehouse and
 -- adds logs for player release safehouse action.
 SafehouseClientLogger.OnReleaseSafeHouse = function()
-    if not hasMethod(ISSafehouseUI, "onReleaseSafehouse") then
+    if not ISSafehouseUI or not ISSafehouseUI.onReleaseSafehouse then
         return
     end
 
@@ -161,7 +157,7 @@ end
 -- OnReleaseSafeHouseCommand rewrites original ISChat.onCommandEntered and
 -- adds logs for player release safehouse action.
 SafehouseClientLogger.OnReleaseSafeHouseCommand = function()
-    if not hasMethod(ISChat, "onCommandEntered") then
+    if not ISChat or not ISChat.onCommandEntered then
         return
     end
 
@@ -192,7 +188,7 @@ end
 -- OnRemovePlayerFromSafehouse rewrites original ISSafehouseUI.onRemovePlayerFromSafehouse
 -- and adds logs for remove player from safehouse action.
 SafehouseClientLogger.OnRemovePlayerFromSafehouse = function()
-    if not hasMethod(ISSafehouseUI, "onRemovePlayerFromSafehouse") then
+    if not ISSafehouseUI or not ISSafehouseUI.onRemovePlayerFromSafehouse then
         return
     end
 
@@ -211,7 +207,7 @@ end
 -- OnSendSafeHouseInvite rewrites original ISSafehouseAddPlayerUI.onClick and
 -- adds logs for send safehouse invite action.
 SafehouseClientLogger.OnSendSafeHouseInvite = function()
-    if not hasMethod(ISSafehouseAddPlayerUI, "onClick") then
+    if not ISSafehouseAddPlayerUI or not ISSafehouseAddPlayerUI.onClick then
         return
     end
 
@@ -232,7 +228,7 @@ end
 -- OnJoinToSafehouse rewrites original ISSafehouseUI.onAnswerSafehouseInvite and
 -- adds logs for players join to safehouse action.
 SafehouseClientLogger.OnJoinToSafehouse = function()
-    if not hasMethod(ISSafehouseUI, "onAnswerSafehouseInvite") then
+    if not ISSafehouseUI or not ISSafehouseUI.onAnswerSafehouseInvite then
         return
     end
 
@@ -255,7 +251,7 @@ end
 -- OnAddSafeHouse rewrites original ISWorldObjectContextMenu.onTakeSafeHouse and
 -- adds logs for player take safehouse action.
 SafehouseClientLogger.OnAddSafeHouse = function()
-    if not hasMethod(ISAddSafeZoneUI, "onClick") then
+    if not ISAddSafeZoneUI or not ISAddSafeZoneUI.onClick then
         return
     end
 
@@ -290,51 +286,38 @@ SafehouseClientLogger.OnAddSafeHouse = function()
     end
 end
 
-local function onGameStart()
-    if isLogExtenderEnabled("TakeSafeHouse") then
-        SafehouseClientLogger.OnTakeSafeHouse()
-    end
+if isLogExtenderEnabled("TakeSafeHouse") then
+    SafehouseClientLogger.OnTakeSafeHouse()
+end
 
-    if isLogExtenderEnabled("ChangeSafeHouseOwner") then
-        SafehouseClientLogger.OnChangeSafeHouseOwner()
-    end
+if isLogExtenderEnabled("ChangeSafeHouseOwner") then
+    SafehouseClientLogger.OnChangeSafeHouseOwner()
+end
 
-    if isLogExtenderEnabled("ReleaseSafeHouse") then
-        SafehouseClientLogger.OnReleaseSafeHouse()
-    end
+if isLogExtenderEnabled("ReleaseSafeHouse") then
+    SafehouseClientLogger.OnReleaseSafeHouse()
+end
 
-    if isLogExtenderEnabled("RemovePlayerFromSafehouse") then
-        SafehouseClientLogger.OnRemovePlayerFromSafehouse()
-    end
+if isLogExtenderEnabled("RemovePlayerFromSafehouse") then
+    SafehouseClientLogger.OnRemovePlayerFromSafehouse()
+end
 
-    if isLogExtenderEnabled("SendSafeHouseInvite") then
-        SafehouseClientLogger.OnSendSafeHouseInvite()
-    end
+if isLogExtenderEnabled("SendSafeHouseInvite") then
+    SafehouseClientLogger.OnSendSafeHouseInvite()
+end
 
-    if isLogExtenderEnabled("JoinToSafehouse") then
-        SafehouseClientLogger.OnJoinToSafehouse()
-    end
+if isLogExtenderEnabled("JoinToSafehouse") then
+    SafehouseClientLogger.OnJoinToSafehouse()
+end
 
-    if isLogExtenderEnabled("ReleaseSafeHouse") then
-        SafehouseClientLogger.OnReleaseSafeHouseCommand()
-    end
+if isLogExtenderEnabled("ReleaseSafeHouse") then
+    SafehouseClientLogger.OnReleaseSafeHouseCommand()
+end
 
+LogExtenderClient.OnGameStart = function()
     if isLogExtenderEnabled("SafehouseAdminTools") then
         SafehouseClientLogger.OnAddSafeHouse()
     end
 end
 
-local function addOnGameStart(handler)
-    if type(Events) ~= "table" then
-        return
-    end
-
-    local gameStart = Events.OnGameStart
-    if not hasMethod(gameStart, "Add") then
-        return
-    end
-
-    gameStart.Add(handler)
-end
-
-addOnGameStart(onGameStart);
+Events.OnGameStart.Add(onGameStart);
