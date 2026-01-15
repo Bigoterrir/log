@@ -282,7 +282,7 @@ if isLogExtenderEnabled("ReleaseSafeHouse") then
     SafehouseClientLogger.OnReleaseSafeHouseCommand()
 end
 
-local function onGameStart()
+LogExtenderClient.OnGameStart = function()
     if isLogExtenderEnabled("SafehouseAdminTools") then
         SafehouseClientLogger.OnAddSafeHouse()
     end
