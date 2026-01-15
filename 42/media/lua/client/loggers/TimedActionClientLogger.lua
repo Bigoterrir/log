@@ -5,6 +5,8 @@
 -- TimedActionClientLogger adds more timed actions logs to the Logs directory
 -- the Project Zomboid game.
 --
+-- Version: 1.0.1
+
 
 local TimedActionClientLogger = {}
 

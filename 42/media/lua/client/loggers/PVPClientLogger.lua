@@ -4,6 +4,8 @@
 --
 -- PVPClientLogger adds logr for PVP actions to the Logs directory the Project Zomboid game.
 --
+-- Version: 1.0.1
+
 
 local PVPClientLogger = {}
 

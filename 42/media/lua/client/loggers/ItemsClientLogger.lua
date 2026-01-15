@@ -5,6 +5,8 @@
 -- ItemsClientLogger adds logr for actions with items to the Logs directory
 -- the Project Zomboid game.
 --
+-- Version: 1.0.1
+
 
 local ItemsClientLogger = {}
 

@@ -5,6 +5,8 @@
 -- TeleportClientLogger adds logr for teleport actions to the Logs directory
 -- the Project Zomboid game.
 --
+-- Version: 1.0.1
+
 
 local TeleportClientLogger = {}
 
