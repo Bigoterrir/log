@@ -130,7 +130,7 @@ SafehouseClientLogger.OnReleaseSafeHouse = function()
 
     local onReleaseSafehouseOriginal = ISSafehouseUI.onReleaseSafehouse;
 
-    ISSafehouseUI.onReleaseSafehouse = function(self, button, player)
+    local function wrapped(self, button, player)
         local owner = button.parent.ui.safehouse:getOwner()
 
         if button.internal == "YES" then
@@ -159,7 +159,7 @@ SafehouseClientLogger.OnReleaseSafeHouseCommand = function()
 
     local onCommandEnteredOriginal = ISChat.onCommandEntered;
 
-    ISChat.onCommandEntered = function(self)
+    local function wrapped(self)
         local command = ISChat.instance.textEntry:getText();
         if command == "/releasesafehouse" then
             local character = getSpecificPlayer(0)
@@ -204,8 +204,8 @@ SafehouseClientLogger.OnSendSafeHouseInvite = function()
 
     local onClickOriginal = ISSafehouseAddPlayerUI.onClick;
 
-    ISSafehouseAddPlayerUI.onClick = function(self, button)
-        onClickOriginal(self, button)
+    local function wrapped(self, button)
+        original(self, button)
 
         if button.internal == "ADDPLAYER" then
             if not self.changeOwnership then
