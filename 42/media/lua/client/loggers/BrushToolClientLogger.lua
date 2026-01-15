@@ -7,6 +7,10 @@
 
 local BrushToolClientLogger = {}
 
+local function isLogExtenderEnabled(option)
+    return SandboxVars and SandboxVars.LogExtender and SandboxVars.LogExtender[option]
+end
+
 function BrushToolClientLogger.onDestroyTile(obj)
     local character = getPlayer()
     local location = logutils.GetLocation(character);
@@ -28,7 +32,7 @@ function BrushToolClientLogger.onDestroyTile(obj)
 end
 
 function BrushToolClientLogger.doBrushToolOptions(player, context, worldobjects, test)
-    if not SandboxVars.LogExtender.BrushToolLogs then
+    if not isLogExtenderEnabled("BrushToolLogs") then
         return
     end
 
