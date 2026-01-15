@@ -10,11 +10,15 @@
 
 local AlternativeMapClientLogger = {}
 
+local function isLogExtenderEnabled(option)
+    return SandboxVars and SandboxVars.LogExtender and SandboxVars.LogExtender[option]
+end
+
 -- WeaponHitThumpable adds objects hit record to map_alternative log file.
 -- [12-12-22 07:08:28.916] 76561190000000000 "outdead" destroyed IsoObject (location_restaurant_spiffos_02_25) with Base.Axe at 11633,8265,0 (11633,8265,0).
 -- TODO: Make me work.
 AlternativeMapClientLogger.WeaponHitThumpable = function(character, weapon, object)
-    if not SandboxVars.LogExtender.AlternativeMap then
+    if not isLogExtenderEnabled("AlternativeMap") then
         return
     end
 
