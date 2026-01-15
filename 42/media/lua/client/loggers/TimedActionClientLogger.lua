@@ -8,6 +8,10 @@
 
 local TimedActionClientLogger = {}
 
+local function isLogExtenderEnabled(option)
+    return type(SandboxVars) == "table" and type(SandboxVars.LogExtender) == "table" and SandboxVars.LogExtender[option]
+end
+
 -- TimedActionPerform overrides the original ISBaseTimedAction: perform function to gain
 -- access to player events.
 TimedActionClientLogger.TimedActionPerform = function()
@@ -24,7 +28,7 @@ TimedActionClientLogger.TimedActionPerform = function()
             if self.Type == "ISTakeGenerator" then
                 local message = logutils.GetLogLinePrefix(player, "taken IsoGenerator") .. " (appliances_misc_01_0) at " .. location;
                 logutils.WriteLog(logutils.filemask.map, message);
-                if SandboxVars.LogExtender.AlternativeMap then
+                if isLogExtenderEnabled("AlternativeMap") then
                     logutils.WriteLog(logutils.filemask.map_alternative, message);
                 end
             elseif self.Type == "ISToggleStoveAction" then
@@ -33,13 +37,13 @@ TimedActionClientLogger.TimedActionPerform = function()
             elseif self.Type == "ISPlaceCampfireAction" then
                 local message = logutils.GetLogLinePrefix(player, "added Campfire") .. " (camping_01_6) at " .. location;
                 logutils.WriteLog(logutils.filemask.map, message);
-                if SandboxVars.LogExtender.AlternativeMap then
+                if isLogExtenderEnabled("AlternativeMap") then
                     logutils.WriteLog(logutils.filemask.map_alternative, message);
                 end
             elseif self.Type == "ISRemoveCampfireAction" then
                 local message = logutils.GetLogLinePrefix(player, "taken Campfire") .. " (camping_01_6) at " .. location;
                 logutils.WriteLog(logutils.filemask.map, message);
-                if SandboxVars.LogExtender.AlternativeMap then
+                if isLogExtenderEnabled("AlternativeMap") then
                     logutils.WriteLog(logutils.filemask.map_alternative, message);
                 end
             elseif (self.Type == "ISLightFromKindle" or self.Type == "ISLightFromLiterature" or self.Type == "ISLightFromPetrol") then
@@ -51,7 +55,7 @@ TimedActionClientLogger.TimedActionPerform = function()
             elseif self.Type == "ISRemoveTrapAction" then
                 local message = logutils.GetLogLinePrefix(player, "taken Trap") .. " (" .. self.trap.openSprite .. ") at " .. location;
                 logutils.WriteLog(logutils.filemask.map, message);
-                if SandboxVars.LogExtender.AlternativeMap then
+                if isLogExtenderEnabled("AlternativeMap") then
                     logutils.WriteLog(logutils.filemask.map_alternative, message);
                 end
             elseif self.Type == "ISCraftAction" then
@@ -65,7 +69,7 @@ TimedActionClientLogger.TimedActionPerform = function()
                 logutils.WriteLog(logutils.filemask.craft, message);
             end;
 
-            if SandboxVars.LogExtender.AlternativeMap then
+            if isLogExtenderEnabled("AlternativeMap") then
                 -- Action=removed - Destroyed with sledgehammer.
                 if self.Type == "ISDestroyStuffAction" then
                     local obj = self.item;
@@ -133,7 +137,7 @@ end
 
 -- OnGameStart adds callback for OnGameStart global event.
 TimedActionClientLogger.OnGameStart = function()
-    if SandboxVars.LogExtender.TimedActions then
+    if isLogExtenderEnabled("TimedActions") then
         TimedActionClientLogger.TimedActionPerform()
     end
 end
