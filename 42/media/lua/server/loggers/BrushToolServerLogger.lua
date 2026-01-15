@@ -12,7 +12,7 @@ local BrushToolServerLogger = {
 }
 
 local function isLogExtenderEnabled(option)
-    return type(SandboxVars) == "table" and type(SandboxVars.LogExtender) == "table" and SandboxVars.LogExtender[option]
+    return SandboxVars and SandboxVars.LogExtender and SandboxVars.LogExtender[option]
 end
 
 function BrushToolServerLogger.createBrushToolTileCursor(self, x, y, z, north, sprite)
