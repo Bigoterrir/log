@@ -5,8 +5,14 @@
 -- ItemsClientLogger adds logr for actions with items to the Logs directory
 -- the Project Zomboid game.
 --
+-- Version: 1.0.1
+
 
 local ItemsClientLogger = {}
+
+local function isLogExtenderEnabled(option)
+    return type(SandboxVars) == "table" and type(SandboxVars.LogExtender) == "table" and SandboxVars.LogExtender[option]
+end
 
 -- DumpAdminItem writes admin actions with items.
 function ItemsClientLogger.DumpAdminItem(player, action, itemName, count, target)
@@ -141,13 +147,13 @@ end
 
 -- OnGameStart adds callback for OnGameStart global event.
 ItemsClientLogger.OnGameStart = function()
-    if SandboxVars.LogExtender.AdminManageItem then
+    if isLogExtenderEnabled("AdminManageItem") then
         ItemsClientLogger.OnAddItemsFromTable()
         ItemsClientLogger.OnChangeItemsFromManageInventory()
     end
 end
 
-if SandboxVars.LogExtender.AdminManageItem then
+if isLogExtenderEnabled("AdminManageItem") then
     ItemsClientLogger.OnGiveIngredients()
 end
 

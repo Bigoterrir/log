@@ -5,8 +5,14 @@
 -- PlayerClienLogger adds players dump logs to the Logs directory the 
 -- Project Zomboid game.
 --
+-- Version: 1.0.1
+
 
 local PlayerClientLogger = {}
+
+local function isLogExtenderEnabled(option)
+    return type(SandboxVars) == "table" and type(SandboxVars.LogExtender) == "table" and SandboxVars.LogExtender[option]
+end
 
 -- DumpPlayer writes player perks and safehouse coordinates to log file.
 function PlayerClientLogger.DumpPlayer(player, action)
@@ -142,20 +148,20 @@ end
 
 -- OnGameStart adds callback for OnGameStart global event.
 PlayerClientLogger.OnGameStart = function()
-    if SandboxVars.LogExtender.PlayerLevelup then
+    if isLogExtenderEnabled("PlayerLevelup") then
         Events.LevelPerk.Add(PlayerClientLogger.OnPerkLevel)
     end
 
-    if SandboxVars.LogExtender.PlayerTick then
+    if isLogExtenderEnabled("PlayerTick") then
         Events.EveryHours.Add(PlayerClientLogger.EveryHours)
     end
 
-    if SandboxVars.LogExtender.PlayerDeath then
+    if isLogExtenderEnabled("PlayerDeath") then
         Events.OnPlayerDeath.Add(PlayerClientLogger.OnPlayerDeath)
     end
 end
 
-if SandboxVars.LogExtender.PlayerConnected then
+if isLogExtenderEnabled("PlayerConnected") then
     Events.OnCreatePlayer.Add(PlayerClientLogger.OnCreatePlayer);
 end
 

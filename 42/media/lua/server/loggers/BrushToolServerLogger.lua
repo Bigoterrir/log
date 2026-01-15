@@ -4,6 +4,8 @@
 --
 -- BrushToolLogger adds BrushTool logs to the Logs directory the Project Zomboid game.
 --
+-- Version: 1.0.1
+
 
 local BrushToolServerLogger = {
     Original = {
@@ -11,10 +13,14 @@ local BrushToolServerLogger = {
     }
 }
 
+local function isLogExtenderEnabled(option)
+    return type(SandboxVars) == "table" and type(SandboxVars.LogExtender) == "table" and SandboxVars.LogExtender[option]
+end
+
 function BrushToolServerLogger.createBrushToolTileCursor(self, x, y, z, north, sprite)
     BrushToolServerLogger.Original.ISBrushToolTileCursor_create(self, x, y, z, north, sprite)
 
-    if not SandboxVars.LogExtender.BrushToolLogs then
+    if not isLogExtenderEnabled("BrushToolLogs") then
         return
     end
 

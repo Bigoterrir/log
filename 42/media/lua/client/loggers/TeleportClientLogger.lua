@@ -5,8 +5,14 @@
 -- TeleportClientLogger adds logr for teleport actions to the Logs directory
 -- the Project Zomboid game.
 --
+-- Version: 1.0.1
+
 
 local TeleportClientLogger = {}
+
+local function isLogExtenderEnabled(option)
+    return type(SandboxVars) == "table" and type(SandboxVars.LogExtender) == "table" and SandboxVars.LogExtender[option]
+end
 
 -- OnTeleport adds logs for teleport actions.
 TeleportClientLogger.OnTeleport = function()
@@ -48,7 +54,7 @@ end
 
 -- OnGameStart adds callback for OnGameStart global event.
 TeleportClientLogger.OnGameStart = function()
-    if SandboxVars.LogExtender.AdminTeleport then
+    if isLogExtenderEnabled("AdminTeleport") then
         TeleportClientLogger.OnTeleport()
     end
 end
