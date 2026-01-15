@@ -5,6 +5,10 @@
 
 local SafehouseClientLogger = {}
 
+local function isLogExtenderEnabled(option)
+    return SandboxVars and SandboxVars.LogExtender and SandboxVars.LogExtender[option]
+end
+
 -- DumpSafehouse writes player's safehouse info to log file.
 function SafehouseClientLogger.DumpSafehouse(player, action, safehouse, target)
     if player == nil then
@@ -240,7 +244,7 @@ SafehouseClientLogger.OnAddSafeHouse = function()
             end
         end
 
-        if SandboxVars.LogExtender.TakeSafeHouse then
+        if isLogExtenderEnabled("TakeSafeHouse") then
             SafehouseClientLogger.DumpSafehouse(character, "create safehouse", safehouse, self.ownerEntry:getInternalText())
         end
 
@@ -250,38 +254,38 @@ SafehouseClientLogger.OnAddSafeHouse = function()
     end
 end
 
-if SandboxVars.LogExtender.TakeSafeHouse then
+if isLogExtenderEnabled("TakeSafeHouse") then
     SafehouseClientLogger.OnTakeSafeHouse()
 end
 
-if SandboxVars.LogExtender.ChangeSafeHouseOwner then
+if isLogExtenderEnabled("ChangeSafeHouseOwner") then
     SafehouseClientLogger.OnChangeSafeHouseOwner()
 end
 
-if SandboxVars.LogExtender.ReleaseSafeHouse then
+if isLogExtenderEnabled("ReleaseSafeHouse") then
     SafehouseClientLogger.OnReleaseSafeHouse()
 end
 
-if SandboxVars.LogExtender.RemovePlayerFromSafehouse then
+if isLogExtenderEnabled("RemovePlayerFromSafehouse") then
     SafehouseClientLogger.OnRemovePlayerFromSafehouse()
 end
 
-if SandboxVars.LogExtender.SendSafeHouseInvite then
+if isLogExtenderEnabled("SendSafeHouseInvite") then
     SafehouseClientLogger.OnSendSafeHouseInvite()
 end
 
-if SandboxVars.LogExtender.JoinToSafehouse then
+if isLogExtenderEnabled("JoinToSafehouse") then
     SafehouseClientLogger.OnJoinToSafehouse()
 end
 
-if SandboxVars.LogExtender.ReleaseSafeHouse then
+if isLogExtenderEnabled("ReleaseSafeHouse") then
     SafehouseClientLogger.OnReleaseSafeHouseCommand()
 end
 
-LogExtenderClient.OnGameStart = function()
-    if SandboxVars.LogExtender.SafehouseAdminTools then
+local function onGameStart()
+    if isLogExtenderEnabled("SafehouseAdminTools") then
         SafehouseClientLogger.OnAddSafeHouse()
     end
 end
 
-Events.OnGameStart.Add(LogExtenderClient.OnGameStart);
+Events.OnGameStart.Add(onGameStart);
