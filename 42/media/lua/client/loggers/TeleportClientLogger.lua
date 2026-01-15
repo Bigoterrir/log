@@ -8,6 +8,10 @@
 
 local TeleportClientLogger = {}
 
+local function isLogExtenderEnabled(option)
+    return SandboxVars and SandboxVars.LogExtender and SandboxVars.LogExtender[option]
+end
+
 -- OnTeleport adds logs for teleport actions.
 TeleportClientLogger.OnTeleport = function()
     local originalOnTeleportValid = DebugContextMenu.onTeleportValid;
@@ -48,7 +52,7 @@ end
 
 -- OnGameStart adds callback for OnGameStart global event.
 TeleportClientLogger.OnGameStart = function()
-    if SandboxVars.LogExtender.AdminTeleport then
+    if isLogExtenderEnabled("AdminTeleport") then
         TeleportClientLogger.OnTeleport()
     end
 end
