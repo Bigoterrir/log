@@ -11,10 +11,14 @@ local BrushToolServerLogger = {
     }
 }
 
+local function isLogExtenderEnabled(option)
+    return SandboxVars and SandboxVars.LogExtender and SandboxVars.LogExtender[option]
+end
+
 function BrushToolServerLogger.createBrushToolTileCursor(self, x, y, z, north, sprite)
     BrushToolServerLogger.Original.ISBrushToolTileCursor_create(self, x, y, z, north, sprite)
 
-    if not SandboxVars.LogExtender.BrushToolLogs then
+    if not isLogExtenderEnabled("BrushToolLogs") then
         return
     end
 
