@@ -282,35 +282,35 @@ SafehouseClientLogger.OnAddSafeHouse = function()
     end
 end
 
-local function onGameStart()
-    if isLogExtenderEnabled("TakeSafeHouse") then
-        SafehouseClientLogger.OnTakeSafeHouse()
-    end
+if isLogExtenderEnabled("TakeSafeHouse") then
+    SafehouseClientLogger.OnTakeSafeHouse()
+end
 
-    if isLogExtenderEnabled("ChangeSafeHouseOwner") then
-        SafehouseClientLogger.OnChangeSafeHouseOwner()
-    end
+if isLogExtenderEnabled("ChangeSafeHouseOwner") then
+    SafehouseClientLogger.OnChangeSafeHouseOwner()
+end
 
-    if isLogExtenderEnabled("ReleaseSafeHouse") then
-        SafehouseClientLogger.OnReleaseSafeHouse()
-    end
+if isLogExtenderEnabled("ReleaseSafeHouse") then
+    SafehouseClientLogger.OnReleaseSafeHouse()
+end
 
-    if isLogExtenderEnabled("RemovePlayerFromSafehouse") then
-        SafehouseClientLogger.OnRemovePlayerFromSafehouse()
-    end
+if isLogExtenderEnabled("RemovePlayerFromSafehouse") then
+    SafehouseClientLogger.OnRemovePlayerFromSafehouse()
+end
 
-    if isLogExtenderEnabled("SendSafeHouseInvite") then
-        SafehouseClientLogger.OnSendSafeHouseInvite()
-    end
+if isLogExtenderEnabled("SendSafeHouseInvite") then
+    SafehouseClientLogger.OnSendSafeHouseInvite()
+end
 
-    if isLogExtenderEnabled("JoinToSafehouse") then
-        SafehouseClientLogger.OnJoinToSafehouse()
-    end
+if isLogExtenderEnabled("JoinToSafehouse") then
+    SafehouseClientLogger.OnJoinToSafehouse()
+end
 
-    if isLogExtenderEnabled("ReleaseSafeHouse") then
-        SafehouseClientLogger.OnReleaseSafeHouseCommand()
-    end
+if isLogExtenderEnabled("ReleaseSafeHouse") then
+    SafehouseClientLogger.OnReleaseSafeHouseCommand()
+end
 
+LogExtenderClient.OnGameStart = function()
     if isLogExtenderEnabled("SafehouseAdminTools") then
         SafehouseClientLogger.OnAddSafeHouse()
     end
