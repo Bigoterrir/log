@@ -10,7 +10,7 @@
 local PVPClientLogger = {}
 
 local function isLogExtenderEnabled(option)
-    return type(SandboxVars) == "table" and type(SandboxVars.LogExtender) == "table" and SandboxVars.LogExtender[option]
+    return SandboxVars and SandboxVars.LogExtender and SandboxVars.LogExtender[option]
 end
 
 -- WeaponHitCharacter adds player hit record to pvp log file.

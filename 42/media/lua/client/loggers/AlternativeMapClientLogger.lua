@@ -13,7 +13,7 @@
 local AlternativeMapClientLogger = {}
 
 local function isLogExtenderEnabled(option)
-    return type(SandboxVars) == "table" and type(SandboxVars.LogExtender) == "table" and SandboxVars.LogExtender[option]
+    return SandboxVars and SandboxVars.LogExtender and SandboxVars.LogExtender[option]
 end
 
 -- WeaponHitThumpable adds objects hit record to map_alternative log file.

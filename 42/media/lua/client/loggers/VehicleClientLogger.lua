@@ -14,7 +14,7 @@ local VehicleClientLogger = {
 }
 
 local function isLogExtenderEnabled(option)
-    return type(SandboxVars) == "table" and type(SandboxVars.LogExtender) == "table" and SandboxVars.LogExtender[option]
+    return SandboxVars and SandboxVars.LogExtender and SandboxVars.LogExtender[option]
 end
 
 -- DumpVehicle writes vehicles info to log file.
