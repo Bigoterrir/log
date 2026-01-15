@@ -68,6 +68,10 @@ end
 -- OnTakeSafeHouse rewrites original ISWorldObjectContextMenu.onTakeSafeHouse and
 -- adds logs for player take safehouse action.
 SafehouseClientLogger.OnTakeSafeHouse = function()
+    if not ISWorldObjectContextMenu or not ISWorldObjectContextMenu.onTakeSafeHouse then
+        return
+    end
+
     local originalOnTakeSafeHouse = ISWorldObjectContextMenu.onTakeSafeHouse;
 
     ISWorldObjectContextMenu.onTakeSafeHouse = function(worldobjects, square, player)
@@ -92,6 +96,10 @@ end
 -- OnChangeSafeHouseOwner rewrites original ISSafehouseAddPlayerUI.onClick and
 -- adds logs for change safehouse ownership action.
 SafehouseClientLogger.OnChangeSafeHouseOwner = function()
+    if not ISSafehouseAddPlayerUI or not ISSafehouseAddPlayerUI.onClick then
+        return
+    end
+
     local onClickOriginal = ISSafehouseAddPlayerUI.onClick;
 
     ISSafehouseAddPlayerUI.onClick = function(self, button)
@@ -120,6 +128,10 @@ end
 -- OnReleaseSafeHouse rewrites original ISSafehouseUI.onReleaseSafehouse and
 -- adds logs for player release safehouse action.
 SafehouseClientLogger.OnReleaseSafeHouse = function()
+    if not ISSafehouseUI or not ISSafehouseUI.onReleaseSafehouse then
+        return
+    end
+
     local onReleaseSafehouseOriginal = ISSafehouseUI.onReleaseSafehouse;
 
     ISSafehouseUI.onReleaseSafehouse = function(self, button, player)
@@ -145,6 +157,10 @@ end
 -- OnReleaseSafeHouseCommand rewrites original ISChat.onCommandEntered and
 -- adds logs for player release safehouse action.
 SafehouseClientLogger.OnReleaseSafeHouseCommand = function()
+    if not ISChat or not ISChat.onCommandEntered then
+        return
+    end
+
     local onCommandEnteredOriginal = ISChat.onCommandEntered;
 
     ISChat.onCommandEntered = function(self)
@@ -172,6 +188,10 @@ end
 -- OnRemovePlayerFromSafehouse rewrites original ISSafehouseUI.onRemovePlayerFromSafehouse
 -- and adds logs for remove player from safehouse action.
 SafehouseClientLogger.OnRemovePlayerFromSafehouse = function()
+    if not ISSafehouseUI or not ISSafehouseUI.onRemovePlayerFromSafehouse then
+        return
+    end
+
     local onRemovePlayerFromSafehouseOriginal = ISSafehouseUI.onRemovePlayerFromSafehouse;
 
     ISSafehouseUI.onRemovePlayerFromSafehouse = function(self, button, player)
@@ -187,6 +207,10 @@ end
 -- OnSendSafeHouseInvite rewrites original ISSafehouseAddPlayerUI.onClick and
 -- adds logs for send safehouse invite action.
 SafehouseClientLogger.OnSendSafeHouseInvite = function()
+    if not ISSafehouseAddPlayerUI or not ISSafehouseAddPlayerUI.onClick then
+        return
+    end
+
     local onClickOriginal = ISSafehouseAddPlayerUI.onClick;
 
     ISSafehouseAddPlayerUI.onClick = function(self, button)
@@ -204,6 +228,10 @@ end
 -- OnJoinToSafehouse rewrites original ISSafehouseUI.onAnswerSafehouseInvite and
 -- adds logs for players join to safehouse action.
 SafehouseClientLogger.OnJoinToSafehouse = function()
+    if not ISSafehouseUI or not ISSafehouseUI.onAnswerSafehouseInvite then
+        return
+    end
+
     local onAnswerSafehouseInviteOriginal = ISSafehouseUI.onAnswerSafehouseInvite;
 
     ISSafehouseUI.onAnswerSafehouseInvite = function(self, button)
@@ -288,4 +316,4 @@ LogExtenderClient.OnGameStart = function()
     end
 end
 
-Events.OnGameStart.Add(LogExtenderClient.OnGameStart);
+Events.OnGameStart.Add(onGameStart);
