@@ -251,6 +251,10 @@ end
 -- OnAddSafeHouse rewrites original ISWorldObjectContextMenu.onTakeSafeHouse and
 -- adds logs for player take safehouse action.
 SafehouseClientLogger.OnAddSafeHouse = function()
+    if not ISAddSafeZoneUI or not ISAddSafeZoneUI.onClick then
+        return
+    end
+
     local originalOnClick = ISAddSafeZoneUI.onClick;
 
     ISAddSafeZoneUI.onClick = function(self, button)
