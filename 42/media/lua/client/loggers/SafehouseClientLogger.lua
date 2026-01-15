@@ -5,6 +5,33 @@
 
 local SafehouseClientLogger = {}
 
+local function isLogExtenderEnabled(option)
+    return type(SandboxVars) == "table" and type(SandboxVars.LogExtender) == "table" and SandboxVars.LogExtender[option]
+end
+
+local function trySet(target, key, value)
+    if type(target) ~= "table" and type(target) ~= "userdata" then
+        return
+    end
+
+    pcall(function()
+        target[key] = value
+    end)
+end
+
+local function addOnGameStart(handler)
+    if type(Events) ~= "table" then
+        return
+    end
+
+    local gameStart = Events.OnGameStart
+    if type(gameStart) ~= "table" or type(gameStart.Add) ~= "function" then
+        return
+    end
+
+    gameStart.Add(handler)
+end
+
 -- DumpSafehouse writes player's safehouse info to log file.
 function SafehouseClientLogger.DumpSafehouse(player, action, safehouse, target)
     if player == nil then
@@ -64,10 +91,14 @@ end
 -- OnTakeSafeHouse rewrites original ISWorldObjectContextMenu.onTakeSafeHouse and
 -- adds logs for player take safehouse action.
 SafehouseClientLogger.OnTakeSafeHouse = function()
-    local originalOnTakeSafeHouse = ISWorldObjectContextMenu.onTakeSafeHouse;
+    local target = ISWorldObjectContextMenu
+    local original = target and target.onTakeSafeHouse
+    if type(original) ~= "function" then
+        return
+    end
 
-    ISWorldObjectContextMenu.onTakeSafeHouse = function(worldobjects, square, player)
-        originalOnTakeSafeHouse(worldobjects, square, player)
+    local wrapped = function(worldobjects, square, player)
+        original(worldobjects, square, player)
 
         local character = getSpecificPlayer(player)
         local safehouse = nil
@@ -83,17 +114,23 @@ SafehouseClientLogger.OnTakeSafeHouse = function()
 
         SafehouseClientLogger.DumpSafehouse(character, "take safehouse", safehouse, nil)
     end
+
+    trySet(target, "onTakeSafeHouse", wrapped)
 end
 
 -- OnChangeSafeHouseOwner rewrites original ISSafehouseAddPlayerUI.onClick and
 -- adds logs for change safehouse ownership action.
 SafehouseClientLogger.OnChangeSafeHouseOwner = function()
-    local onClickOriginal = ISSafehouseAddPlayerUI.onClick;
+    local target = ISSafehouseAddPlayerUI
+    local original = target and target.onClick
+    if type(original) ~= "function" then
+        return
+    end
 
-    ISSafehouseAddPlayerUI.onClick = function(self, button)
+    local wrapped = function(self, button)
         local owner = self.safehouse:getOwner()
 
-        onClickOriginal(self, button)
+        original(self, button)
 
         if button.internal == "ADDPLAYER" then
             local character = getPlayer()
@@ -111,14 +148,20 @@ SafehouseClientLogger.OnChangeSafeHouseOwner = function()
             end
         end
     end
+
+    trySet(target, "onClick", wrapped)
 end
 
 -- OnReleaseSafeHouse rewrites original ISSafehouseUI.onReleaseSafehouse and
 -- adds logs for player release safehouse action.
 SafehouseClientLogger.OnReleaseSafeHouse = function()
-    local onReleaseSafehouseOriginal = ISSafehouseUI.onReleaseSafehouse;
+    local target = ISSafehouseUI
+    local original = target and target.onReleaseSafehouse
+    if type(original) ~= "function" then
+        return
+    end
 
-    ISSafehouseUI.onReleaseSafehouse = function(self, button, player)
+    local wrapped = function(self, button, player)
         local owner = button.parent.ui.safehouse:getOwner()
 
         if button.internal == "YES" then
@@ -134,16 +177,22 @@ SafehouseClientLogger.OnReleaseSafeHouse = function()
             end
         end
 
-        onReleaseSafehouseOriginal(self, button, player)
+        original(self, button, player)
     end
+
+    trySet(target, "onReleaseSafehouse", wrapped)
 end
 
 -- OnReleaseSafeHouseCommand rewrites original ISChat.onCommandEntered and
 -- adds logs for player release safehouse action.
 SafehouseClientLogger.OnReleaseSafeHouseCommand = function()
-    local onCommandEnteredOriginal = ISChat.onCommandEntered;
+    local target = ISChat
+    local original = target and target.onCommandEntered
+    if type(original) ~= "function" then
+        return
+    end
 
-    ISChat.onCommandEntered = function(self)
+    local wrapped = function(self)
         local command = ISChat.instance.textEntry:getText();
         if command == "/releasesafehouse" then
             local character = getSpecificPlayer(0)
@@ -161,32 +210,44 @@ SafehouseClientLogger.OnReleaseSafeHouseCommand = function()
             SafehouseClientLogger.DumpSafehouse(character, "release safehouse", safehouse, nil)
         end
 
-        onCommandEnteredOriginal(self)
+        original(self)
     end
+
+    trySet(target, "onCommandEntered", wrapped)
 end
 
 -- OnRemovePlayerFromSafehouse rewrites original ISSafehouseUI.onRemovePlayerFromSafehouse
 -- and adds logs for remove player from safehouse action.
 SafehouseClientLogger.OnRemovePlayerFromSafehouse = function()
-    local onRemovePlayerFromSafehouseOriginal = ISSafehouseUI.onRemovePlayerFromSafehouse;
+    local target = ISSafehouseUI
+    local original = target and target.onRemovePlayerFromSafehouse
+    if type(original) ~= "function" then
+        return
+    end
 
-    ISSafehouseUI.onRemovePlayerFromSafehouse = function(self, button, player)
+    local wrapped = function(self, button, player)
         if button.internal == "YES" then
             local character = getPlayer()
             SafehouseClientLogger.DumpSafehouse(character, "remove player from safehouse", button.parent.ui.safehouse, button.parent.ui.selectedPlayer)
         end
 
-        onRemovePlayerFromSafehouseOriginal(self, button, player)
+        original(self, button, player)
     end
+
+    trySet(target, "onRemovePlayerFromSafehouse", wrapped)
 end
 
 -- OnSendSafeHouseInvite rewrites original ISSafehouseAddPlayerUI.onClick and
 -- adds logs for send safehouse invite action.
 SafehouseClientLogger.OnSendSafeHouseInvite = function()
-    local onClickOriginal = ISSafehouseAddPlayerUI.onClick;
+    local target = ISSafehouseAddPlayerUI
+    local original = target and target.onClick
+    if type(original) ~= "function" then
+        return
+    end
 
-    ISSafehouseAddPlayerUI.onClick = function(self, button)
-        onClickOriginal(self, button)
+    local wrapped = function(self, button)
+        original(self, button)
 
         if button.internal == "ADDPLAYER" then
             if not self.changeOwnership then
@@ -195,21 +256,29 @@ SafehouseClientLogger.OnSendSafeHouseInvite = function()
             end
         end
     end
+
+    trySet(target, "onClick", wrapped)
 end
 
 -- OnJoinToSafehouse rewrites original ISSafehouseUI.onAnswerSafehouseInvite and
 -- adds logs for players join to safehouse action.
 SafehouseClientLogger.OnJoinToSafehouse = function()
-    local onAnswerSafehouseInviteOriginal = ISSafehouseUI.onAnswerSafehouseInvite;
+    local target = ISSafehouseUI
+    local original = target and target.onAnswerSafehouseInvite
+    if type(original) ~= "function" then
+        return
+    end
 
-    ISSafehouseUI.onAnswerSafehouseInvite = function(self, button)
+    local wrapped = function(self, button)
         if button.internal == "YES" then
             local character = getPlayer()
             SafehouseClientLogger.DumpSafehouse(character, "join to safehouse", button.parent.safehouse, nil)
         end
 
-        onAnswerSafehouseInviteOriginal(self, button)
+        original(self, button)
     end
+
+    trySet(target, "onAnswerSafehouseInvite", wrapped)
 end
 
 --
@@ -219,10 +288,14 @@ end
 -- OnAddSafeHouse rewrites original ISWorldObjectContextMenu.onTakeSafeHouse and
 -- adds logs for player take safehouse action.
 SafehouseClientLogger.OnAddSafeHouse = function()
-    local originalOnClick = ISAddSafeZoneUI.onClick;
+    local target = ISAddSafeZoneUI
+    local original = target and target.onClick
+    if type(original) ~= "function" then
+        return
+    end
 
-    ISAddSafeZoneUI.onClick = function(self, button)
-        originalOnClick(self, button)
+    local wrapped = function(self, button)
+        original(self, button)
 
         local setX = math.floor(math.min(self.X1, self.X2));
         local setY = math.floor(math.min(self.Y1, self.Y2));
@@ -240,7 +313,7 @@ SafehouseClientLogger.OnAddSafeHouse = function()
             end
         end
 
-        if SandboxVars.LogExtender.TakeSafeHouse then
+        if isLogExtenderEnabled("TakeSafeHouse") then
             SafehouseClientLogger.DumpSafehouse(character, "create safehouse", safehouse, self.ownerEntry:getInternalText())
         end
 
@@ -248,40 +321,42 @@ SafehouseClientLogger.OnAddSafeHouse = function()
                 .. " at " .. logutils.GetLocation(character)
         logutils.WriteLog(logutils.filemask.admin, message);
     end
+
+    trySet(target, "onClick", wrapped)
 end
 
-if SandboxVars.LogExtender.TakeSafeHouse then
-    SafehouseClientLogger.OnTakeSafeHouse()
-end
+local function onGameStart()
+    if isLogExtenderEnabled("TakeSafeHouse") then
+        SafehouseClientLogger.OnTakeSafeHouse()
+    end
 
-if SandboxVars.LogExtender.ChangeSafeHouseOwner then
-    SafehouseClientLogger.OnChangeSafeHouseOwner()
-end
+    if isLogExtenderEnabled("ChangeSafeHouseOwner") then
+        SafehouseClientLogger.OnChangeSafeHouseOwner()
+    end
 
-if SandboxVars.LogExtender.ReleaseSafeHouse then
-    SafehouseClientLogger.OnReleaseSafeHouse()
-end
+    if isLogExtenderEnabled("ReleaseSafeHouse") then
+        SafehouseClientLogger.OnReleaseSafeHouse()
+    end
 
-if SandboxVars.LogExtender.RemovePlayerFromSafehouse then
-    SafehouseClientLogger.OnRemovePlayerFromSafehouse()
-end
+    if isLogExtenderEnabled("RemovePlayerFromSafehouse") then
+        SafehouseClientLogger.OnRemovePlayerFromSafehouse()
+    end
 
-if SandboxVars.LogExtender.SendSafeHouseInvite then
-    SafehouseClientLogger.OnSendSafeHouseInvite()
-end
+    if isLogExtenderEnabled("SendSafeHouseInvite") then
+        SafehouseClientLogger.OnSendSafeHouseInvite()
+    end
 
-if SandboxVars.LogExtender.JoinToSafehouse then
-    SafehouseClientLogger.OnJoinToSafehouse()
-end
+    if isLogExtenderEnabled("JoinToSafehouse") then
+        SafehouseClientLogger.OnJoinToSafehouse()
+    end
 
-if SandboxVars.LogExtender.ReleaseSafeHouse then
-    SafehouseClientLogger.OnReleaseSafeHouseCommand()
-end
+    if isLogExtenderEnabled("ReleaseSafeHouse") then
+        SafehouseClientLogger.OnReleaseSafeHouseCommand()
+    end
 
-LogExtenderClient.OnGameStart = function()
-    if SandboxVars.LogExtender.SafehouseAdminTools then
+    if isLogExtenderEnabled("SafehouseAdminTools") then
         SafehouseClientLogger.OnAddSafeHouse()
     end
 end
 
-Events.OnGameStart.Add(LogExtenderClient.OnGameStart);
+addOnGameStart(onGameStart);
