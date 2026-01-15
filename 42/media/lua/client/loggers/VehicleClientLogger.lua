@@ -11,6 +11,10 @@ local VehicleClientLogger = {
     vehicleAttachmentB = nil,
 }
 
+local function isLogExtenderEnabled(option)
+    return SandboxVars and SandboxVars.LogExtender and SandboxVars.LogExtender[option]
+end
+
 -- DumpVehicle writes vehicles info to log file.
 function VehicleClientLogger.DumpVehicle(player, action, vehicle, vehicle2)
     if player == nil then
@@ -287,23 +291,23 @@ VehicleClientLogger.OnCheatGetKey = function()
     end
 end
 
-if SandboxVars.LogExtender.VehicleEnter then
+if isLogExtenderEnabled("VehicleEnter") then
     Events.OnEnterVehicle.Add(VehicleClientLogger.VehicleEnter)
 end
 
-if SandboxVars.LogExtender.VehicleExit then
+if isLogExtenderEnabled("VehicleExit") then
     Events.OnExitVehicle.Add(VehicleClientLogger.VehicleExit)
 end
 
-if SandboxVars.LogExtender.VehicleAttach then
+if isLogExtenderEnabled("VehicleAttach") then
     VehicleClientLogger.VehicleAttach()
 end
 
-if SandboxVars.LogExtender.VehicleDetach then
+if isLogExtenderEnabled("VehicleDetach") then
     VehicleClientLogger.VehicleDetach()
 end
 
-if SandboxVars.LogExtender.VehicleAdminTools then
+if isLogExtenderEnabled("VehicleAdminTools") then
     VehicleClientLogger.ISSpawnVehicleUI_onClick()
     VehicleClientLogger.OnAddVehicleCommand()
     VehicleClientLogger.OnCheatRemove()
